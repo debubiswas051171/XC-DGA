@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.Net;
 using System.Net.Http;
 using DGALib.IO.Http;
-//using IdentityModel.Client;
+
 
 using System.Web.Security;
 using SC = global::Sitecore;
@@ -15,12 +15,7 @@ using Newtonsoft.Json.Linq;
 using IdentityModel.Client;
 using DGA.Take2Rest.IdentityModelExtensions;
 
-//using DGA.Take2Rest.AnnualMeeting;
-//using DGA.Take2Rest.BiennialNomination;
-//using DGA.Take2Rest.Awards;
-//using DGA.Take2Rest.EmployerSearch;
-//using DGA.Take2Rest.Login;
-//using DGA.Take2Rest.AgencyListing;
+
 
 namespace DGA.Take2Rest
 {
@@ -31,7 +26,7 @@ namespace DGA.Take2Rest
         {
             get
             {
-                return System.Configuration.ConfigurationManager.AppSettings["IdentityURL"];
+                return Sitecore.Configuration.Settings.GetSetting("IdentityURL");
             }
         }
 
@@ -40,7 +35,7 @@ namespace DGA.Take2Rest
         {
             get
             {
-                return System.Configuration.ConfigurationManager.AppSettings["ApiUrl"];
+                return Sitecore.Configuration.Settings.GetSetting("ApiUrl");
             }
 
         }
@@ -49,7 +44,7 @@ namespace DGA.Take2Rest
         {
             get
             {
-                return System.Configuration.ConfigurationManager.AppSettings["ClientId"];
+                return Sitecore.Configuration.Settings.GetSetting("ClientId");
             }
 
         }
@@ -58,7 +53,7 @@ namespace DGA.Take2Rest
         {
             get
             {
-                return System.Configuration.ConfigurationManager.AppSettings["ClientSecret"];
+                return Sitecore.Configuration.Settings.GetSetting("ClientSecret");
             }
 
         }
@@ -67,10 +62,11 @@ namespace DGA.Take2Rest
         {
             get
             {
-                return System.Configuration.ConfigurationManager.AppSettings["Scope"];
+                return Sitecore.Configuration.Settings.GetSetting("Scope");
             }
 
         }
+
 
         private static async Task<DiscoveryResponse> getDisco()
         {
