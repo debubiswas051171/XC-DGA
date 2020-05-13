@@ -82,13 +82,14 @@ namespace DGA.Take2Rest
         }
 
 
-        private static async Task<IdentityModel.Client.IdentityModelExtensions.TokenResponse> _RetrieveAccessToken(string uName, string pWd)
+        private static async Task<IdentityModel.Client.IdentityModelExtensions.TokenResponse> _RetrieveAccessToken(string uName, string pWd,
+            DiscoveryResponse disco)
         {
             var client = new HttpClient();
             IdentityModel.Client.IdentityModelExtensions.TokenResponse tokenResponse = null;
             try
             {
-                var disco = await getDisco();
+                //var disco = await getDisco();
 
                 string[] temp = uName.Split(new string[] { "\\" }, StringSplitOptions.RemoveEmptyEntries);
                 uName = temp.Length > 1 ? temp[1] : temp[0];
@@ -116,17 +117,18 @@ namespace DGA.Take2Rest
             return tokenResponse;
         }
 
-        private static async Task<DGATokenResponse> _RetrieveDGAAccessToken(string token)
+        private static async Task<DGATokenResponse> _RetrieveDGAAccessToken(string token, DiscoveryResponse disco)
         {
             var client = new HttpClient();
             DGATokenResponse dgaTokenResponse = null;
             try
             {
-                var disco = await getDisco();
+                //var disco = await getDisco();
 
                 client = new HttpClient();
                 client.SetBearerToken(token);
-                var resp = client.GetStringAsync(disco.UserInfoEndpoint).Result;
+                //var resp = client.GetStringAsync(disco.UserInfoEndpoint).Result;
+                var resp = await client.GetStringAsync(disco.UserInfoEndpoint).ConfigureAwait(false);
 
                 dgaTokenResponse = Newtonsoft.Json.JsonConvert.DeserializeObject<DGATokenResponse>(resp);
 
@@ -140,20 +142,27 @@ namespace DGA.Take2Rest
         }
 
 
-        public static IdentityModel.Client.IdentityModelExtensions.TokenResponse RetrieveAccessToken(string login, string password)
+        public static IdentityModel.Client.IdentityModelExtensions.TokenResponse RetrieveAccessToken(string login, string password,
+            DiscoveryResponse tokenEndpoint)
         {
             IdentityModel.Client.IdentityModelExtensions.TokenResponse token = null;
-            Task.Run(async () => { token = await _RetrieveAccessToken(login, password); }).Wait();
+            Task.Run(async () => { token = await _RetrieveAccessToken(login, password, tokenEndpoint); }).Wait();
             return token;
         }
 
-        public static DGATokenResponse RetrieveDGAAccessToken(string tokenString)
+        public static DGATokenResponse RetrieveDGAAccessToken(string tokenString, DiscoveryResponse tokenEndpoint)
         {
             DGATokenResponse token = null;
-            Task.Run(async () => { token = await _RetrieveDGAAccessToken(tokenString); }).Wait();
+            Task.Run(async () => { token = await _RetrieveDGAAccessToken(tokenString, tokenEndpoint); }).Wait();
             return token;
         }
 
+        public static DiscoveryResponse GetDisco()
+        {
+            DiscoveryResponse disco = null;
+            Task.Run(async () => { disco = await getDisco(); }).Wait();
+            return disco;
+        }
 
 
     }
